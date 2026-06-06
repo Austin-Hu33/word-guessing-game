@@ -1,6 +1,8 @@
 import random
+import requests
 
-WORD_LIST = [
+# fallback word list if microservice is not running
+FALLBACK_WORDS = [
     "apple", "brave", "crane", "dress", "eagle",
     "flame", "grape", "honey", "irony", "joker",
     "kneel", "lemon", "mango", "nerve", "ocean",
@@ -10,5 +12,13 @@ WORD_LIST = [
     "frost", "gloom", "haste", "inlet", "juice"
 ]
 
+MICROSERVICE_URL = "http://localhost:5001/random-word"
+
+
 def get_random_word():
-    return random.choice(WORD_LIST)
+    # request a random word from the microservice
+    try:
+        response = requests.get(MICROSERVICE_URL)
+        return response.json().get('word')
+    except Exception:
+        return random.choice(FALLBACK_WORDS)
